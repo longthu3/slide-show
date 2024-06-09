@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Image Slider</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+    .slider {
+      position: relative;
+      width: 80%;
+      margin: auto;
+      overflow: hidden;
+    }
+    .slides {
+      display: flex;
+      transition: transform 0.5s ease-in-out;
+    }
+    .slide {
+      min-width: 100%;
+      box-sizing: border-box;
+    }
+    .slide img {
+      width: 100%;
+      object-fit: contain;
+      display: block;
+      height: 500px;
+    }
+    .arrows {
+      position: absolute;
+      top: 50%;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      transform: translateY(-50%);
+    }
+    .arrow {
+      background: rgba(0, 0, 0, 0.5);
+      color: white;
+      border: none;
+      padding: 10px;
+      cursor: pointer;
+    }
+    .arrow.disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    .dots {
+      text-align: center;
+      padding: 10px;
+      position: absolute;
+      bottom: 10px;
+      width: 100%;
+    }
+    .dot {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      background: white;
+      border-radius: 50%;
+      margin: 0 5px;
+      cursor: pointer;
+    }
+    .dot.active {
+      background: yellow;
+    }
+  </style>
+</head>
+<body>
+  <div class="slider" id="slider">
+    <div class="slides" id="slides">
+      <div class="slide"><img src="https://i.pinimg.com/564x/51/ec/53/51ec53db0a66e145addf26d3d956cd17.jpg" alt="Slide 1"></div>
+      <div class="slide"><img src="https://i.pinimg.com/564x/21/cf/0f/21cf0f334fa433b3eb1c0aaca1d071c5.jpg" alt="Slide 2"></div>
+      <div class="slide"><img src="https://i.pinimg.com/564x/85/f4/18/85f4182f06bf7babed3944e552f82f00.jpg" alt="Slide 3"></div>
+      <div class="slide"><img src="https://i.pinimg.com/564x/0e/47/f1/0e47f1bdb97e64ddeea6e921fdfc2542.jpg" alt="Slide 4"></div>
+
+    </div>
+    <div class="arrows">
+      <button class="arrow" id="prev">&#10094;</button>
+      <button class="arrow" id="next">&#10095;</button>
+    </div>
+    <div class="dots" id="dots"></div>
+  </div>
+
+  <script>
+    const slides = document.getElementById('slides');
+    const dotsContainer = document.getElementById('dots');
+    const prevButton = document.getElementById('prev');
+    const nextButton = document.getElementById('next');
+    let currentIndex = 0;
+
+    // Create dots based on the number of slides
+    function createDots() {
+      const slideCount = slides.children.length;
+      for (let i = 0; i < slideCount; i++) {
+        const dot = document.createElement('span');
+        dot.classList.add('dot');
+        dot.addEventListener('click', () => {
+          currentIndex = i;
+          updateSlidePosition();
+        });
+        dotsContainer.appendChild(dot);
+      }
+    }
+
+    function updateSlidePosition() {
+      slides.style.transform = `translateX(${-currentIndex * 100}%)`;
+      const dots = document.querySelectorAll('.dot');
+      dots.forEach((dot, index) => {
+        dot.classList.toggle('active', index === currentIndex);
+      });
+      prevButton.classList.toggle('disabled', currentIndex === 0);
+      nextButton.classList.toggle('disabled', currentIndex === slides.children.length - 1);
+    }
+
+    function moveToNextSlide() {
+      if (currentIndex < slides.children.length - 1) {
+        currentIndex++;
+      }
+      updateSlidePosition();
+    }
+
+    function moveToPrevSlide() {
+      if (currentIndex > 0) {
+        currentIndex--;
+      }
+      updateSlidePosition();
+    }
+
+    prevButton.addEventListener('click', moveToPrevSlide);
+    nextButton.addEventListener('click', moveToNextSlide);
+
+    // Initialize the slider
+    createDots();
+    updateSlidePosition();
+  </script>
+</body>
+</html>
